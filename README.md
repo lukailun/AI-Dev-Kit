@@ -10,7 +10,7 @@
 
 ### 安装步骤
 
-1. **移动项目到 `~/.claude`**
+* **移动项目到 `~/.claude`**
 
    将本项目的 `commands`、`hooks`、`prompts` 这三个目录，以及 `.env.template` 文件移动或复制到 `~/.claude` 目录下。
 
@@ -26,7 +26,7 @@
 	└── prompts/
 ```
 
-2. **配置环境变量**
+* **配置环境变量**
 
    将 `~/.claude/.env.template` 重命名为 `~/.claude/.env`，然后编辑该文件，填入你的 Linear API Key：
 
@@ -38,7 +38,7 @@
    
    	> [Linear Personal API Keys](https://linear.app/developers/graphql#personal-api-keys)
 
-3. **安装 Bun**
+* **安装 Bun**
 
 	如果你还没有安装 Bun，请运行以下命令：
 
@@ -46,7 +46,7 @@
 	curl -fsSL https://bun.sh/install | bash
 	```
 
-4. **安装项目依赖**
+* **安装项目依赖**
 
    在 `~/.claude/hooks` 目录中安装依赖：
 
@@ -55,7 +55,7 @@
    bun install
    ```
 
-5. **配置 Claude Code Settings**
+* **配置 Claude Code Settings**
 
    编辑 `~/.claude/settings.json` 文件，添加以下 hooks 配置：
 
@@ -74,7 +74,7 @@
 
    > **提示**: 如果你的 `settings.json` 中已有其他配置，请将 `hooks` 部分合并到现有配置中。
 
-6. **开始使用**
+* **开始使用**
 
    配置完成后，该 hook 会在你使用 Claude Code 提交提示词时自动运行。
 
