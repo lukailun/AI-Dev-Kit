@@ -1,0 +1,14 @@
+{
+    "statusLine": {
+        "type": "command",
+        "command": "npx -y @owloops/claude-powerline@latest --style=powerline"
+    },
+    "hooks": {
+        "UserPromptSubmit": [{
+          "hooks": [{
+            "type": "command",
+            "command": "bun run $HOME/.claude/hooks/UserPromptSubmit.ts"
+          }]
+        }]
+    }
+}
