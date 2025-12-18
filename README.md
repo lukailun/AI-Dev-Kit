@@ -1,166 +1,242 @@
-# dot-claude
+# Claude Code Hooks
 
-这是一个 Claude Code 的 UserPromptSubmit hook，用于增强提示词功能，支持命令快捷方式、Linear 集成和多方案生成。
+这是一个增强 Claude Code 用户体验的 hooks 项目，通过 UserPromptSubmit Hook 提供智能提示词处理功能。
 
-## 快速开始
-
-### 前置要求
+## 前置要求
 
 本项目使用 [Bun](https://bun.sh) 作为运行时和包管理器。
 
-### 安装步骤
+如果你还没有安装 Bun，请运行以下命令：
 
-* **移动项目到 `~/.claude`**
-
-   将本项目的 `commands`、`hooks`、`prompts` 这三个目录，以及 `.env.template` 文件移动或复制到 `~/.claude` 目录下。
-
-   > **提示**: 如果你的 `~/.claude` 目录中已有同名目录和文件，建议手动合并以避免覆盖现有配置。
-
-	移动完成后，`~/.claude` 目录结构如下：
-
-	```
-	~/.claude/
-	├── .env.template
-	├── hooks/
-	├── commands/
-	└── prompts/
-	```
-
-* **配置环境变量**
-
-   将 `~/.claude/.env.template` 重命名为 `~/.claude/.env`，然后编辑该文件，填入你的 Linear API Key：
-
-   ```
-   LINEAR_API_KEY=your_linear_api_key_here
-   ```
-
-   > **提示**: 如果你不使用 Linear 集成功能，可以跳过此步骤或留空该值。
-   
-   	> [Linear Personal API Keys](https://linear.app/developers/graphql#personal-api-keys)
-
-* **安装 Bun**
-
-	如果你还没有安装 Bun，请运行以下命令：
-
-	```bash
-	curl -fsSL https://bun.sh/install | bash
-	```
-
-* **安装项目依赖**
-
-   在 `~/.claude/hooks` 目录中安装依赖：
-
-   ```bash
-   cd ~/.claude/hooks
-   bun install
-   ```
-
-* **配置 Claude Code Settings**
-
-   编辑 `~/.claude/settings.json` 文件，添加以下 hooks 配置：
-
-   ```json
-   {
-     "hooks": {
-       "UserPromptSubmit": [{
-         "hooks": [{
-           "type": "command",
-           "command": "bun run $HOME/.claude/hooks/UserPromptSubmit.ts"
-         }]
-       }]
-     }
-   }
-   ```
-
-   > **提示**: 如果你的 `settings.json` 中已有其他配置，请将 `hooks` 部分合并到现有配置中。
-
-* **开始使用**
-
-   配置完成后，该 hook 会在你使用 Claude Code 提交提示词时自动运行。
-
-## 功能特性
-
-### 1. 命令快捷方式
-
-使用简短的命令后缀快速添加指令前缀，无需每次输入完整的提示词。
-
-**使用方法**:
-
-* Hook 方式：`任务内容 :command` （例如：`Hello World :zh`）
-* Slash Command 方式：`/command 任务内容` （例如：`/zh Hello World`）
-
-**可用命令**:
-
-| 命令 | 说明 | Hook 方式示例 | Slash Command 方式示例 |
-|------|------|---------|---------|
-| `zh` | 翻译为中文 | `Hello World :zh` | `/zh Hello World` |
-| `en` | 翻译为英文 | `你好世界 :en` | `/en 你好世界` |
-| `plan` | 生成分步计划 | `实现用户登录功能 :plan` | `/plan 实现用户登录功能` |
-| `explain` | 通俗易懂解释 | `什么是闭包 :explain` | `/explain 什么是闭包` |
-| `summarize` | 总结内容 | `@article.md :summarize` | `/summarize @article.md` |
-| `analyze` | 分析问题 | `系统性能下降 :analyze` | `/analyze 系统性能下降` |
-| `improve` | 文本润色 | `优化这段文案 :improve` | `/improve 优化这段文案` |
-| `code` | 代码编写 | `快速排序算法 :code` | `/code 快速排序算法` |
-| `comment` | 添加注释 | `@utils.ts :comment` | `/comment @utils.ts` |
-| `debug` | 调试分析 | `函数返回 undefined :debug` | `/debug 函数返回 undefined` |
-| `refactor` | 代码重构 | `@legacy.js :refactor` | `/refactor @legacy.js` |
-| `test` | 生成测试用例 | `@auth.ts :test` | `/test @auth.ts` |
-| `document` | 生成技术文档 | `@api.ts :document` | `/document @api.ts` |
-| `review` | 代码审查 | `@component.tsx :review` | `/review @component.tsx` |
-
-### 2. Linear 集成
-
-快速引用 Linear issue 数据，自动获取完整的 issue 信息。
-
-**使用方法**:
-
-支持两种格式：
-
-* 完整格式：`linear(4t-1111)`
-* 简写格式：`4t(1111)`
-
-**示例**:
-
-```
-修复 linear(4t-1111) 中描述的 bug
+```bash
+curl -fsSL https://bun.sh/install | bash
 ```
 
-```
-优化 4t(1111) 的性能问题
-```
-
-会自动将 `linear(4t-1111)` 和 `4t(1111)` 替换为对应 issue 的完整 JSON 数据，包括标题、描述、状态等信息。
-
-> **提示**: 需要在 `~/.claude/.env` 中设置 `LINEAR_API_KEY`。
-
-> [Linear Personal API Keys](https://linear.app/developers/graphql#personal-api-keys)
-
-### 3. 多方案生成
-
-生成多个不同的解决方案，用于探索不同的实现思路。
-
-**使用方法**: `任务描述 v(数量)`
-
-**示例**:
-```
-实现用户认证 v(3)
-```
-
-会生成 3 个不同的用户认证实现方案。
-
-## 组合使用
-
-以上功能可以组合使用：
-
-**示例**:
+## 目录结构
 
 ```
-4t(1111):debug          # Linear 引用 + 调试分析
+.claude/
+├── hooks/
+│   ├── UserPromptSubmit.ts           # 主 Hook 入口
+│   ├── config/
+│   │   ├── commands/                 # 命令配置
+│   │   │   ├── index.ts              # 命令汇总
+│   │   │   ├── code-development.ts   # 代码开发类命令
+│   │   │   ├── text-processing.ts    # 文本处理类命令
+│   │   │   └── translation.ts        # 翻译类命令
+│   │   └── processors.ts             # Processor 配置
+│   └── processors/
+│       ├── commandProcessor.ts       # 命令处理器
+│       ├── linearProcessor.ts        # Linear 集成处理器
+│       ├── variationProcessor.ts     # 变体生成处理器
+│       └── *.test.ts                 # 测试文件
+├── prompts/
+│   └── variations.md                 # 多种方案模板
+├── .env.template                     # 环境变量模板
+└── README.md                         # 本文件
 ```
 
-**处理顺序**:
+## 核心功能
 
-1. **Linear 引用处理** - 替换 `linear(issueId)` 或 `4t(1111)` 为实际数据
-2. **命令处理** - 识别并展开 `:command` 命令快捷方式
-3. **多方案处理** - 处理 `v(n)` 生成多个方案
+### 🎯 UserPromptSubmit Hook
 
+自动处理用户输入的提示词，通过可配置的 processors 提供智能增强功能。
+
+### 🔧 Processors
+
+项目包含三个主要 processors，按顺序执行：
+
+#### 1. **Linear Processor**
+集成 Linear issue 管理系统
+
+```bash
+# 使用方式
+linear(TEAM-123)
+```
+
+功能：
+- 自动获取 Linear issue 的详细信息
+- 无需手动复制粘贴 issue 内容
+- 需要配置 `LINEAR_API_KEY`
+
+#### 2. **Command Processor**
+命令快捷方式，在提示词末尾使用 `:command` 格式
+
+```bash
+# 示例
+翻译这段文字 :zh
+实现排序算法 :code
+解释量子计算 :explain
+```
+
+支持的命令：
+
+**文本处理类**
+- `:analyze` - 分析（指出核心问题和解决方向）
+- `:explain` - 通俗解释
+- `:improve` - 文本润色
+- `:plan` - 生成分步计划
+- `:summarize` - 总结
+
+**翻译类**
+- `:en` - 翻译为英文
+- `:zh` - 翻译为中文
+
+**代码开发类**
+- `:code` - 代码编写
+- `:comment` - 代码注释
+- `:debug` - 调试分析
+- `:document` - 技术文档生成
+- `:refactor` - 代码重构
+- `:review` - 代码审查
+- `:test` - 测试用例生成
+
+#### 3. **Variation Processor**
+生成多种不同的解决方案
+
+```bash
+# 使用方式
+实现身份验证系统 v(3)  # 生成 3 种不同的方案
+优化数据库查询 v(5)    # 生成 5 种不同的方案
+```
+
+### 🔄 组合使用
+
+Processors 可以组合使用，按顺序执行：
+
+```bash
+# Command + Variation
+设计 API 架构 v(3) :plan
+# 输出：生成 3 个不同的详细分步计划
+
+# 只用 Command
+重构这段代码 :refactor
+# 输出：重构建议
+
+# 只用 Variation
+数据库设计方案 v(4)
+# 输出：4 个不同的数据库设计方案
+```
+
+## 快速开始
+
+### 1. 安装依赖
+
+```bash
+cd .claude/hooks
+bun install
+```
+
+### 2. 配置环境变量（可选）
+
+如果需要使用 Linear 集成功能：
+
+```bash
+cp .env.template .env
+# 编辑 .env 文件，填入你的 LINEAR_API_KEY
+```
+
+### 3. 开始使用
+
+Hook 会自动处理所有输入的提示词：
+
+```bash
+# 翻译
+Hello World :zh
+
+# 代码生成
+实现二分查找算法 :code
+
+# 生成多个方案
+设计用户认证系统 v(3)
+
+# 组合使用
+优化数据库查询 v(2) :analyze
+
+# Linear 集成
+修复 linear(TEAM-123) 中的问题
+```
+
+## 自定义配置
+
+### 启用/禁用 Processors
+
+编辑 `.claude/hooks/config/processors.ts` 文件：
+
+```typescript
+export const AVAILABLE_PROCESSORS: ProcessorConfig[] = [
+  {
+    name: 'linear',
+    processor: processLinearReference,
+    enabled: true  // 设置为 false 禁用
+  },
+  {
+    name: 'command',
+    processor: processCommand,
+    enabled: true
+  },
+  {
+    name: 'variation',
+    processor: processVariation,
+    enabled: true
+  }
+];
+```
+
+### 添加新命令
+
+在 `.claude/hooks/config/commands/` 目录下的对应文件中添加：
+
+```typescript
+// 例如在 text-processing.ts 中添加
+export const TEXT_PROCESSING = {
+  ':custom': {
+    prefix: '你的自定义前缀：',
+    description: '自定义命令描述'
+  },
+  // ... 其他命令
+};
+```
+
+### 添加新 Processor
+
+1. 在 `.claude/hooks/processors/` 创建新的 processor 文件
+2. 在 `.claude/hooks/config/processors.ts` 注册新 processor
+3. 编写测试文件
+
+## 项目架构
+
+```
+UserPromptSubmit Hook
+        ↓
+  获取启用的 Processors
+        ↓
+    按顺序执行：
+    1. Linear Processor
+    2. Command Processor
+    3. Variation Processor
+        ↓
+    输出处理后的提示词
+```
+
+## 开发指南
+
+### 添加新功能
+
+1. **Fork 本仓库**
+2. **创建功能分支**: `git checkout -b feature/amazing-feature`
+3. **编写代码和测试**: 确保 `bun test` 通过
+4. **提交更改**: `git commit -m 'Add amazing feature'`
+5. **推送到分支**: `git push origin feature/amazing-feature`
+6. **创建 Pull Request**
+
+## 许可证
+
+MIT
+
+## 相关链接
+
+- [Claude Code 官方文档](https://docs.claude.ai/claude-code)
+- [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk)
+- [Linear API 文档](https://developers.linear.app)
+- [Bun 官方文档](https://bun.sh/docs)
