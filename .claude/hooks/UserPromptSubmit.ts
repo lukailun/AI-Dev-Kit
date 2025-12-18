@@ -1,7 +1,5 @@
 import { type UserPromptSubmitHookInput } from "@anthropic-ai/claude-agent-sdk";
-import { processCommand } from "./processors/commandProcessor";
-import { processLinearReference } from "./processors/linearProcessor";
-import { processVariation } from "./processors/variationProcessor";
+import { getEnabledProcessors } from "./config/processors";
 
 try {
   const input = await Bun.stdin.json() as UserPromptSubmitHookInput;
@@ -11,10 +9,13 @@ try {
     throw new Error('无效的提示词输入');
   }
 
+  const processors = getEnabledProcessors();
+
   let processedPrompt = prompt;
-  processedPrompt = await processLinearReference(processedPrompt);
-  processedPrompt = processCommand(processedPrompt);
-  processedPrompt = await processVariation(processedPrompt);
+  for (const { processor } of processors) {
+    processedPrompt = await processor(processedPrompt);
+  }
+
   console.log(processedPrompt);
 
 } catch (error) {

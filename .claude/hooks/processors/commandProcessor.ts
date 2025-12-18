@@ -1,4 +1,4 @@
-import { COMMANDS, type CommandKey } from "../config/commands";
+import { COMMANDS, type CommandKey } from "../config/commands/index";
 
 /**
  * 处理命令前缀
