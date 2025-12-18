@@ -34,14 +34,12 @@ describe("linearProcessor", () => {
     }
   });
 
-  // Note: Testing with actual LINEAR_API_KEY would require mocking the LinearClient
-  // or integration tests with a test Linear workspace
   test("should extract issue ID from linear() pattern", async () => {
     const input = "Review linear(TEAM-123)";
     const matches = [...input.matchAll(/linear\((.*?)\)/g)];
 
     expect(matches).toHaveLength(1);
-    expect(matches[0][1]).toBe("TEAM-123");
+    expect(matches[0]?.[1]).toBe("TEAM-123");
   });
 
   test("should extract multiple issue IDs from linear() patterns", async () => {
@@ -49,8 +47,8 @@ describe("linearProcessor", () => {
     const matches = [...input.matchAll(/linear\((.*?)\)/g)];
 
     expect(matches).toHaveLength(2);
-    expect(matches[0][1]).toBe("TEAM-123");
-    expect(matches[1][1]).toBe("TEAM-456");
+    expect(matches[0]?.[1]).toBe("TEAM-123");
+    expect(matches[1]?.[1]).toBe("TEAM-456");
   });
 
   test("should handle various issue ID formats", () => {
@@ -63,7 +61,7 @@ describe("linearProcessor", () => {
     testCases.forEach(testCase => {
       const matches = [...testCase.matchAll(/linear\((.*?)\)/g)];
       expect(matches).toHaveLength(1);
-      expect(matches[0][1]).toBeTruthy();
+      expect(matches[0]?.[1]).toBeTruthy();
     });
   });
 
@@ -77,9 +75,9 @@ describe("linearProcessor", () => {
 
     invalidCases.forEach(testCase => {
       const matches = [...testCase.matchAll(/linear\((.*?)\)/g)];
-      if (matches.length > 0 && matches[0][1] === "") {
+      if (matches.length > 0 && matches[0]?.[1] === "") {
         // linear() with empty content should match but have empty ID
-        expect(matches[0][1]).toBe("");
+        expect(matches[0]?.[1]).toBe("");
       }
     });
   });
