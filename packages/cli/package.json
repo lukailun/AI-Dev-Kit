@@ -1,0 +1,23 @@
+{
+  "name": "@ai-dev-kit/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Command-line interface for AI-Dev-Kit",
+  "bin": {
+    "ai-dev-kit": "./src/index.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@ai-dev-kit/core": "workspace:*",
+    "@ai-dev-kit/hooks": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir=dist --target=bun"
+  }
+}

@@ -148,7 +148,26 @@ bun install
 LINEAR_API_KEY=your_linear_api_key_here
 ```
 
-### 3. 开始使用
+### 3. 使用 CLI 工具
+
+```bash
+# 初始化配置
+bun run cli init
+
+# 处理 prompt
+bun run cli process "Hello World :zh"
+
+# 查看所有命令
+bun run cli commands list
+
+# 查看所有处理器
+bun run cli processors list
+
+# 查看帮助
+bun run cli help
+```
+
+### 4. 在 Claude Code 中使用
 
 Hook 会自动处理所有输入的提示词：
 
@@ -168,6 +187,43 @@ Hello World :zh
 # Linear 集成
 修复 LINEAR-123 中的问题
 ```
+
+## CLI 工具
+
+AI-Dev-Kit 提供了命令行工具，可以独立使用处理器功能。
+
+### 安装
+
+```bash
+# 在项目根目录
+cd /path/to/ai-dev-kit
+bun install
+
+# 使用 CLI
+bun run cli <command>
+```
+
+### 常用命令
+
+```bash
+# 初始化配置文件
+bun run cli init
+
+# 处理 prompt
+bun run cli process "Hello World :zh"
+bun run cli process "Sort array v(3) :code"
+
+# 列出所有命令
+bun run cli commands list
+
+# 列出所有处理器
+bun run cli processors list
+
+# 查看版本
+bun run cli version
+```
+
+详细文档请查看 [CLI 包文档](./packages/cli/README.md)。
 
 ## 开发指南
 
@@ -271,8 +327,8 @@ UserPromptSubmit Hook
 - [x] 基础 Monorepo 架构
 - [x] 核心处理器（Linear、Command、Variation）
 - [x] Claude Code 适配器
+- [x] CLI 工具
 - [ ] Cursor 适配器
-- [ ] CLI 工具
 - [ ] Skills 包
 - [ ] Subagents 包
 - [ ] NPM 发布

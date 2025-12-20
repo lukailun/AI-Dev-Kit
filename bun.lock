@@ -34,6 +34,20 @@
         "@types/bun": "latest",
       },
     },
+    "packages/cli": {
+      "name": "@ai-dev-kit/cli",
+      "version": "0.1.0",
+      "bin": {
+        "ai-dev-kit": "./src/index.ts",
+      },
+      "dependencies": {
+        "@ai-dev-kit/core": "workspace:*",
+        "@ai-dev-kit/hooks": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
     "packages/core": {
       "name": "@ai-dev-kit/core",
       "version": "0.1.0",
@@ -56,6 +70,8 @@
   },
   "packages": {
     "@ai-dev-kit/adapters": ["@ai-dev-kit/adapters@workspace:packages/adapters"],
+
+    "@ai-dev-kit/cli": ["@ai-dev-kit/cli@workspace:packages/cli"],
 
     "@ai-dev-kit/core": ["@ai-dev-kit/core@workspace:packages/core"],
 

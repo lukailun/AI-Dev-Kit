@@ -11,7 +11,10 @@
     "test:hooks": "cd packages/hooks && bun test",
     "build:core": "cd packages/core && bun build ./src/index.ts --outdir=dist",
     "build:hooks": "cd packages/hooks && bun build ./src/index.ts --outdir=dist",
-    "build:adapters": "cd packages/adapters && bun build ./claude/UserPromptSubmit.ts --outdir=dist"
+    "build:adapters": "cd packages/adapters && bun build ./claude/UserPromptSubmit.ts --outdir=dist",
+    "build:cli": "cd packages/cli && bun build ./src/index.ts --outdir=dist --target=bun",
+    "cli": "bun run packages/cli/src/index.ts",
+    "dev:cli": "cd packages/cli && bun run dev"
   },
   "devDependencies": {
     "@types/bun": "latest",
