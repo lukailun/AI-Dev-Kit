@@ -1,6 +1,26 @@
 # @ai-dev-kit/cli
 
-AI-Dev-Kit 的命令行工具。
+AI-Dev-Kit 的命令行工具，用于安装和测试 prompt 处理功能。
+
+## 核心功能
+
+### 1. 安装到 Claude Code
+
+CLI 最主要的功能是**将 AI-Dev-Kit 安装到用户的 Claude Code 环境**：
+
+```bash
+bun run cli install
+```
+
+这会：
+- 复制所有源文件到 `~/.claude/hooks`
+- 自动修复导入路径（从 workspace 导入改为相对导入）
+- 创建配置模板和依赖文件
+- 提供后续配置指引
+
+### 2. 测试处理器
+
+在安装前，可以使用 CLI 测试各个处理器的功能。
 
 ## 安装
 
@@ -14,39 +34,44 @@ cd /path/to/ai-dev-kit
 bun install
 
 # 使用 CLI
-bun run packages/cli/src/index.ts <command>
-```
-
-### 全局安装（可选）
-
-```bash
-# 链接到全局
-cd packages/cli
-bun link
-
-# 现在可以全局使用
-ai-dev-kit <command>
+bun run cli <command>
 ```
 
 ## 使用方式
 
-### 查看帮助
+### 安装到 Claude Code（最重要）
 
 ```bash
-ai-dev-kit help
+# 1. 运行安装命令
+bun run cli install
+
+# 2. 安装依赖
+cd ~/.claude/hooks
+bun install
+
+# 3. 配置 settings.json（如输出提示）
+
+# 4. 重启 Claude Code
 ```
 
-### 处理 Prompt
+安装完成后，在 Claude Code 中输入任何 prompt 都会自动经过处理器处理。
+
+### 测试处理器（可选）
+
+在安装前或安装后，可以使用 CLI 测试处理器：
 
 ```bash
-# 基础使用
-ai-dev-kit process "Hello World :zh"
+# 查看帮助
+bun run cli help
 
-# 使用变体
-ai-dev-kit process "Sort array v(3)"
+# 测试翻译
+bun run cli process "Hello World :zh"
 
-# 组合使用
-ai-dev-kit process "Design API v(2) :plan"
+# 测试变体
+bun run cli process "Sort array v(3)"
+
+# 测试组合
+bun run cli process "Design API v(2) :plan"
 ```
 
 ### 管理处理器

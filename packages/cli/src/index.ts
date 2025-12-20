@@ -5,6 +5,7 @@ import { processCommand } from "./commands/process";
 import { processorsCommand } from "./commands/processors";
 import { commandsCommand } from "./commands/commands";
 import { initCommand } from "./commands/init";
+import { installCommand } from "./commands/install";
 import { versionCommand } from "./commands/version";
 
 const USAGE = `
@@ -13,7 +14,8 @@ AI-Dev-Kit CLI v0.1.0
 Usage: ai-dev-kit <command> [options]
 
 Commands:
-  process <prompt>           处理一个 prompt
+  install                    安装 AI-Dev-Kit 到 Claude Code
+  process <prompt>           处理一个 prompt（测试用）
   processors list            列出所有处理器
   processors enable <name>   启用指定处理器
   processors disable <name>  禁用指定处理器
@@ -23,10 +25,10 @@ Commands:
   help                      显示帮助信息
 
 Examples:
-  ai-dev-kit process "Hello World :zh"
+  ai-dev-kit install                    # 安装到 Claude Code
+  ai-dev-kit process "Hello World :zh"  # 测试处理器
   ai-dev-kit processors list
   ai-dev-kit commands list
-  ai-dev-kit init
 
 更多信息请访问: https://github.com/your-org/ai-dev-kit
 `;
@@ -45,6 +47,10 @@ async function main() {
 
   try {
     switch (command) {
+      case 'install':
+        await installCommand();
+        break;
+
       case 'process':
         await processCommand(args.slice(1));
         break;

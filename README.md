@@ -190,37 +190,44 @@ Hello World :zh
 
 ## CLI 工具
 
-AI-Dev-Kit 提供了命令行工具，可以独立使用处理器功能。
+AI-Dev-Kit 提供了命令行工具，用于**安装**和**测试**功能。
 
-### 安装
+### 安装到 Claude Code
 
 ```bash
-# 在项目根目录
-cd /path/to/ai-dev-kit
+# 1. 克隆项目
+git clone https://github.com/your-org/ai-dev-kit.git
+cd ai-dev-kit
+
+# 2. 安装依赖
 bun install
 
-# 使用 CLI
-bun run cli <command>
+# 3. 运行安装命令
+bun run cli install
+
+# 4. 按照提示完成配置
+cd ~/.claude/hooks && bun install
 ```
 
-### 常用命令
+这会将所有处理器代码复制到 `~/.claude/hooks`，让 Claude Code 自动使用这些功能。
+
+### 测试处理器
 
 ```bash
-# 初始化配置文件
-bun run cli init
-
-# 处理 prompt
+# 测试翻译
 bun run cli process "Hello World :zh"
-bun run cli process "Sort array v(3) :code"
 
-# 列出所有命令
+# 测试代码生成
+bun run cli process "Sort array :code"
+
+# 测试变体生成
+bun run cli process "Design API v(3)"
+
+# 查看所有命令
 bun run cli commands list
 
-# 列出所有处理器
+# 查看所有处理器
 bun run cli processors list
-
-# 查看版本
-bun run cli version
 ```
 
 详细文档请查看 [CLI 包文档](./packages/cli/README.md)。
