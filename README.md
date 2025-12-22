@@ -4,7 +4,13 @@
 
 ## 项目简介
 
-AI-Dev-Kit 是一个 Monorepo 架构的项目，旨在为 Claude Code、Cursor 等 AI IDE 提供可复用的 hook、processor 和工具函数。通过模块化设计，您可以轻松地扩展功能、添加新的处理器，并在不同平台间共享核心逻辑。
+AI-Dev-Kit 是一个 Monorepo 架构的项目，旨在为 Claude Code、Cursor 等 AI IDE 提供可复用的 hook、processor 和工具函数。通过模块化设计和适配器模式，您可以轻松地扩展功能、添加新的处理器，并在不同平台间共享核心逻辑。
+
+**核心特性**：
+- 🎯 **跨 IDE 支持** - 一次开发，多平台运行（Claude Code、Cursor）
+- 🔧 **智能处理器** - Linear 集成、命令快捷方式、多方案生成
+- 📦 **适配器模式** - 轻松添加新 IDE 支持
+- 🚀 **一键安装** - 自动安装到所有支持的 IDE
 
 ## 前置要求
 
@@ -16,36 +22,143 @@ AI-Dev-Kit 是一个 Monorepo 架构的项目，旨在为 Claude Code、Cursor �
 curl -fsSL https://bun.sh/install | bash
 ```
 
+## 快速开始
+
+### 1. 克隆并安装
+
+```bash
+# 克隆项目
+git clone https://github.com/your-org/ai-dev-kit.git
+cd ai-dev-kit
+
+# 安装依赖
+bun install
+```
+
+### 2. 安装到 IDE
+
+```bash
+# 安装到所有支持的 IDE（当前：Claude Code）
+bun cli install
+
+# 或指定特定 IDE
+bun cli install --target=claude
+bun cli install --target=cursor  # 待实现
+
+# 强制覆盖已有安装
+bun cli install --force
+```
+
+安装后会自动：
+- 复制处理器代码到 `~/.claude/hooks/`
+- 复制 slash commands 到 `~/.claude/commands/`
+- 复制 prompts 模板到 `~/.claude/prompts/`
+- 生成配置文件
+
+### 3. 完成配置
+
+```bash
+# 1. 安装依赖
+cd ~/.claude/hooks
+bun install
+
+# 2. 配置 settings.json
+# 在 ~/.claude/settings.json 中添加：
+{
+  "hooks": {
+    "UserPromptSubmit": "~/.claude/hooks/UserPromptSubmit.ts"
+  }
+}
+
+# 3. （可选）配置 Linear API Key
+# 编辑 ~/.claude/.env
+LINEAR_API_KEY=your_linear_api_key_here
+
+# 4. 重启 Claude Code
+```
+
+### 4. 开始使用
+
+在 Claude Code 中直接使用：
+
+```bash
+# 翻译
+Hello World :zh
+
+# 代码生成
+实现二分查找算法 :code
+
+# 生成多个方案
+设计用户认证系统 v(3)
+
+# 组合使用
+优化数据库查询 v(2) :analyze
+
+# Linear 集成
+linear(TEAM-123)
+```
+
 ## 架构设计
+
+### 项目结构
 
 ```
 ai-dev-kit/
-├── packages/
-│   ├── core/                    # @ai-dev-kit/core - 核心类型和工具
+├── packages/                      # Monorepo 包
+│   ├── core/                      # 核心类型和工具
 │   │   └── src/
-│   │       ├── types/          # 处理器类型、命令类型等
-│   │       └── utils/          # 环境变量工具、路径工具等
-│   ├── hooks/                   # @ai-dev-kit/hooks - 处理器实现
+│   │       ├── types/            # Processor、Command 类型定义
+│   │       └── utils/            # 环境变量、路径工具
+│   │
+│   ├── hooks/                     # 处理器实现
 │   │   ├── src/
-│   │   │   ├── processors/     # Linear、Command、Variation 处理器
-│   │   │   ├── commands/       # 命令配置（翻译、代码、文本处理）
-│   │   │   └── config.ts       # 处理器配置管理
-│   │   └── tests/              # 50+ 测试用例
-│   └── adapters/                # @ai-dev-kit/adapters - 平台适配层
-│       ├── claude/              # Claude Code 适配器
-│       └── cursor/              # Cursor 适配器（预留）
-├── .claude/                     # Claude Code 配置目录
-│   ├── hooks/
-│   │   └── UserPromptSubmit.ts  # Hook 入口文件
-│   └── prompts/
-│       └── variations.md        # 多种方案模板
-└── README.md                    # 本文件
+│   │   │   ├── processors/       # Linear、Command、Variation
+│   │   │   ├── commands/         # 命令定义（15+个命令）
+│   │   │   └── config.ts         # 处理器配置
+│   │   └── tests/                # 50+ 测试用例
+│   │
+│   ├── adapters/                  # 平台适配器 ⭐
+│   │   ├── shared/               # IDEAdapter 基类
+│   │   ├── claude/               # Claude Code 适配器
+│   │   ├── cursor/               # Cursor 适配器（预留）
+│   │   └── src/                  # 工厂函数
+│   │
+│   └── cli/                       # CLI 工具
+│       └── src/commands/
+│           └── install.ts        # 跨 IDE 安装命令
+│
+├── templates/                     # 安装模板 ⭐
+│   ├── claude/                   # Claude Code 模板
+│   │   ├── commands/             # Slash commands
+│   │   ├── prompts/              # Prompt 模板
+│   │   ├── .env.template         # 环境变量模板
+│   │   └── package.template.json
+│   └── cursor/                   # Cursor 模板（预留）
+│
+└── .claude/                       # 开发环境 ⭐
+    ├── hooks/                    # 使用 workspace 依赖
+    ├── commands@ -> templates/   # 符号链接
+    └── prompts@ -> templates/    # 符号链接
 ```
 
 ### 包依赖关系
 
 ```
-@ai-dev-kit/adapters → @ai-dev-kit/hooks → @ai-dev-kit/core
+cli → adapters → hooks → core
+```
+
+### 适配器模式
+
+```typescript
+// 创建适配器
+const adapter = createAdapter('claude', { force: true });
+
+// 执行安装
+const result = await adapter.install();
+
+// 支持的 IDE
+getSupportedIDEs();     // ['claude', 'cursor']
+getImplementedIDEs();   // ['claude'] - 当前已实现
 ```
 
 ## 核心功能
@@ -121,118 +234,94 @@ Processors 可以组合使用，按顺序执行：
 设计 API 架构 v(3) :plan
 # 输出：生成 3 个不同的详细分步计划
 
-# 只用 Command
-重构这段代码 :refactor
-# 输出：重构建议
+# Linear + Command
+linear(TEAM-123) :analyze
+# 输出：获取 issue 详情并分析问题
 
-# 只用 Variation
-数据库设计方案 v(4)
-# 输出：4 个不同的数据库设计方案
-```
-
-## 快速开始
-
-### 1. 安装依赖
-
-```bash
-# 在项目根目录安装所有依赖
-bun install
-```
-
-### 2. 配置环境变量（可选）
-
-如果需要使用 Linear 集成功能，在 `~/.claude/.env` 中配置：
-
-```bash
-# LINEAR API Key
-LINEAR_API_KEY=your_linear_api_key_here
-```
-
-### 3. 使用 CLI 工具
-
-```bash
-# 初始化配置
-bun run cli init
-
-# 处理 prompt
-bun run cli process "Hello World :zh"
-
-# 查看所有命令
-bun run cli commands list
-
-# 查看所有处理器
-bun run cli processors list
-
-# 查看帮助
-bun run cli help
-```
-
-### 4. 在 Claude Code 中使用
-
-Hook 会自动处理所有输入的提示词：
-
-```bash
-# 翻译
-Hello World :zh
-
-# 代码生成
-实现二分查找算法 :code
-
-# 生成多个方案
-设计用户认证系统 v(3)
-
-# 组合使用
-优化数据库查询 v(2) :analyze
-
-# Linear 集成
-修复 LINEAR-123 中的问题
+# 全部组合
+linear(TEAM-456) v(2) :code
+# 输出：基于 issue 生成 2 种实现方案
 ```
 
 ## CLI 工具
 
-AI-Dev-Kit 提供了命令行工具，用于**安装**和**测试**功能。
-
-### 安装到 Claude Code
+### 安装命令
 
 ```bash
-# 1. 克隆项目
-git clone https://github.com/your-org/ai-dev-kit.git
-cd ai-dev-kit
+# 安装到所有 IDE
+bun cli install
+# 输出：
+# 🚀 安装 AI-Dev-Kit 到所有支持的 IDE (claude)...
+# ============================================================
+# 正在安装到 CLAUDE...
+# ============================================================
+# ✓ 创建目录结构
+# ✓ 复制源文件...
+# ...
+# ✅ 文件安装完成！
 
-# 2. 安装依赖
-bun install
+# 只安装到 Claude Code
+bun cli install --target=claude
 
-# 3. 运行安装命令
-bun run cli install
+# 只安装到 Cursor
+bun cli install --target=cursor  # 待实现
 
-# 4. 按照提示完成配置
-cd ~/.claude/hooks && bun install
+# 强制覆盖
+bun cli install --force
 ```
-
-这会将所有处理器代码复制到 `~/.claude/hooks`，让 Claude Code 自动使用这些功能。
 
 ### 测试处理器
 
 ```bash
 # 测试翻译
-bun run cli process "Hello World :zh"
+bun cli process "Hello World :zh"
 
 # 测试代码生成
-bun run cli process "Sort array :code"
+bun cli process "Sort array :code"
 
 # 测试变体生成
-bun run cli process "Design API v(3)"
+bun cli process "Design API v(3)"
 
-# 查看所有命令
-bun run cli commands list
-
-# 查看所有处理器
-bun run cli processors list
+# 测试 Linear 集成
+bun cli process "linear(TEAM-123)"
 ```
 
-详细文档请查看 [CLI 包文档](./packages/cli/README.md)。
+### 管理命令
+
+```bash
+# 查看所有命令
+bun cli commands list
+
+# 查看所有处理器
+bun cli processors list
+
+# 启用/禁用处理器
+bun cli processors enable linear
+bun cli processors disable variation
+
+# 初始化配置
+bun cli init
+
+# 查看版本
+bun cli version
+
+# 查看帮助
+bun cli help
+```
 
 ## 开发指南
+
+### 项目角色说明
+
+**开发环境** (`.claude/`)：
+- 项目开发者的测试环境
+- 使用 `workspace:*` 依赖，直接引用源代码
+- 通过符号链接使用 templates 中的配置
+
+**用户环境** (`~/.claude/`)：
+- 用户安装后的运行环境
+- 包含完整的处理器源代码副本
+- 独立的依赖安装
 
 ### 添加新命令
 
@@ -279,6 +368,62 @@ export const AVAILABLE_PROCESSORS: ProcessorConfig[] = [
 
 3. 编写测试（在 `packages/hooks/tests/`）
 
+### 添加新 IDE 支持
+
+1. 创建适配器：
+
+```typescript
+// packages/adapters/your-ide/adapter.ts
+import { IDEAdapter, AdapterConfig, InstallResult } from "../shared";
+
+export class YourIDEAdapter extends IDEAdapter {
+  getInstallPath(): string {
+    return join(homedir(), '.your-ide/hooks');
+  }
+
+  generateHook(): string {
+    // 生成 IDE 特定的 hook 代码
+  }
+
+  generatePackageJson(): string {
+    // 生成 package.json
+  }
+
+  async install(): Promise<InstallResult> {
+    // 执行安装逻辑
+  }
+}
+```
+
+2. 在工厂函数中注册：
+
+```typescript
+// packages/adapters/src/index.ts
+import { YourIDEAdapter } from '../your-ide';
+
+export function createAdapter(target: TargetIDE, config: AdapterConfig = {}): IDEAdapter {
+  switch (target) {
+    case 'claude':
+      return new ClaudeAdapter(config);
+    case 'your-ide':
+      return new YourIDEAdapter(config);
+    // ...
+  }
+}
+
+export function getImplementedIDEs(): TargetIDE[] {
+  return ['claude', 'your-ide']; // 添加到列表
+}
+```
+
+3. 创建模板：
+
+```
+templates/your-ide/
+├── config.template
+└── ...
+```
+
 ### 处理器执行顺序
 
 处理器按照 `AVAILABLE_PROCESSORS` 数组的顺序依次执行：
@@ -314,7 +459,7 @@ cd packages/hooks && bun test
 - 集成测试 - 处理器链条的组合功能
 - 边缘情况 - 异常输入、空值处理等
 
-## 项目架构
+## 项目架构流程
 
 ```
 UserPromptSubmit Hook
@@ -335,10 +480,61 @@ UserPromptSubmit Hook
 - [x] 核心处理器（Linear、Command、Variation）
 - [x] Claude Code 适配器
 - [x] CLI 工具
+- [x] 适配器模式重构
+- [x] 跨 IDE 安装支持
 - [ ] Cursor 适配器
+- [ ] Windsurf 适配器
 - [ ] Skills 包
 - [ ] Subagents 包
 - [ ] NPM 发布
+
+## 常见问题
+
+### Q: 如何更新已安装的 AI-Dev-Kit？
+
+```bash
+# 在项目目录
+git pull
+bun install
+
+# 重新安装到 IDE（会覆盖）
+bun cli install --force
+```
+
+### Q: 支持哪些 IDE？
+
+当前已实现：
+- ✅ Claude Code
+
+计划支持：
+- ⏳ Cursor
+- ⏳ Windsurf
+- ⏳ Zed
+
+### Q: 如何禁用某个 processor？
+
+```bash
+# 使用 CLI
+bun cli processors disable variation
+
+# 或手动编辑 ~/.claude/hooks/config.ts
+```
+
+### Q: Linear Processor 不工作？
+
+确保：
+1. 配置了 `LINEAR_API_KEY` 在 `~/.claude/.env`
+2. API Key 有正确的权限
+3. Issue ID 格式正确（如 `TEAM-123`）
+
+### Q: 开发环境 (.claude/) 和用户环境 (~/.claude/) 有什么区别？
+
+| 项目 | 开发环境 (.claude) | 用户环境 (~/.claude) |
+|------|-------------------|---------------------|
+| 用途 | 开发和测试 | 生产使用 |
+| 依赖方式 | workspace:* | 复制的源代码 |
+| 更新方式 | git pull | 重新 install |
+| 文件来源 | 直接使用源码 | install 命令复制 |
 
 ## 贡献指南
 
@@ -356,6 +552,7 @@ UserPromptSubmit Hook
 - 遵循现有代码风格
 - 为新功能添加测试
 - 确保所有测试通过 (`bun test --recursive`)
+- 更新相关文档
 
 ## 许可证
 
@@ -367,3 +564,11 @@ MIT
 - [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk)
 - [Linear API 文档](https://developers.linear.app)
 - [Bun 官方文档](https://bun.sh/docs)
+
+## 致谢
+
+感谢所有贡献者和使用者！
+
+---
+
+Made with ❤️ using [Bun](https://bun.sh)

@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@ai-dev-kit/core": "workspace:*",
-    "@ai-dev-kit/hooks": "workspace:*"
+    "@ai-dev-kit/hooks": "workspace:*",
+    "@ai-dev-kit/adapters": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest"

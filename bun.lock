@@ -13,7 +13,7 @@
       "name": "hooks",
       "dependencies": {
         "@ai-dev-kit/hooks": "workspace:*",
-        "@anthropic-ai/claude-agent-sdk": "^0.1.69",
+        "@anthropic-ai/claude-agent-sdk": "^0.1.75",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -28,7 +28,7 @@
       "dependencies": {
         "@ai-dev-kit/core": "workspace:*",
         "@ai-dev-kit/hooks": "workspace:*",
-        "@anthropic-ai/claude-agent-sdk": "^0.1.72",
+        "@anthropic-ai/claude-agent-sdk": "^0.1.75",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -41,6 +41,7 @@
         "ai-dev-kit": "./src/index.ts",
       },
       "dependencies": {
+        "@ai-dev-kit/adapters": "workspace:*",
         "@ai-dev-kit/core": "workspace:*",
         "@ai-dev-kit/hooks": "workspace:*",
       },

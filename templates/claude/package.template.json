@@ -1,0 +1,10 @@
+{
+  "name": "claude-hooks",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@linear/sdk": "^68.0.0",
+    "@anthropic-ai/claude-agent-sdk": "^0.1.75",
+    "dotenv": "^17.2.3"
+  }
+}
